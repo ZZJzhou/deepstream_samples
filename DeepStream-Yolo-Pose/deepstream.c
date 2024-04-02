@@ -106,6 +106,10 @@ parse_pose_from_meta(NvDsFrameMeta *frame_meta, NvDsObjectMeta *obj_meta)
     circle_params->bg_color.blue = 1.0;
     circle_params->bg_color.alpha = 1.0;
     display_meta->num_circles++;
+
+    // Assuming 'xc' and 'yc' are float variables
+    g_printerr("xc:%f\n", xc);
+    g_printerr("yc:%f\n", yc);
   }
 
   for (guint i = 0; i < num_joints + 2; ++i) {
