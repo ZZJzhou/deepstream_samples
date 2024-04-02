@@ -1,0 +1,35 @@
+
++-------------+       +-----------------------+          +-----------------------+       +-------------+
+| src element |       |        element 1      |          |        element N      |       | sink element|
+|   +---------+       +---------+   +---------+          +---------+   +---------+       +---------+   |
+|   | src pad |------>|sink pad |   | src pad |...------>|sink pad |   | src pad |------>|sink pad |   |
+|   +---------+       +---------+   +---------+          +---------+   +---------+       +---------+   |
+|             |       |                       |          |                       |       |             |
++-------------+       +-----------------------+          +-----------------------+       +-------------+
+gstreamer的每个element， src pad是输出，sink pad 是输入，src组件只有src pad，sink组件只有sink pad。
+可以在命令行中使用gst-inspect查看具体的element的所有properties和输入（sink pad）输出（src pad）支持的数据格式和范围尺寸等
+例如：
+#gst-inspect-1.0 filesrc
+
+metadata结构：
+https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_plugin_metadata.html
+
+
+1. 类似 file src->decoder->nvinfer->osd->display 这样的pipeline，中间对nvinfer结果处理并输出到显示/网络等终端，
+一般考虑在nvinfer下一级的sink pad添加probe回调，获取输入buffer和metadata，参考 test1/test2:
+/opt/nvidia/deepstream/deepstream/sources/apps/sample_apps/deepstream-test1/deepstream_test1_app.c
+
+osd_sink_pad_buffer_probe注册到osd的src pad回调中，函数中遍历metadata，统计检出的人车个数，并将结果绘制到输出
+
+2. 只需要调用硬解码+nvinfer，结果需要取出来，类似rtspsrc->decoder->nvinfer->appsrc:
+参考appsrc示例
+/opt/nvidia/deepstream/deepstream-6.3/sources/apps/sample_apps/deepstream-appsrc-test/deepstream_appsrc_test_app.c
+
+new_sample()函数有详细说明
+
+所有C++示例代码说明：
+https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_C_Sample_Apps.html
+所有python示例代码说明：
+https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_Python_Sample_Apps.html
+deepstream-app说明：
+https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_ref_app_deepstream.html
